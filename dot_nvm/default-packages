@@ -1,0 +1,4 @@
+# Installed automatically into every Node version nvm installs.
+# One package name per line.
+npm-check-updates
+typescript

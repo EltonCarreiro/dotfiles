@@ -1,0 +1,4 @@
+# Global Python CLI tools, installed with `uv tool install`.
+# One per line; blank lines and # comments ignored.
+ruff
+httpie

@@ -1,0 +1,31 @@
+# Global gitignore: things that should never enter any repository.
+.DS_Store
+.AppleDouble
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+
+# Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+.nvim.lua
+
+# Environments and secrets
+.env
+.env.local
+.venv/
+venv/
+.direnv/
+
+# Build noise
+node_modules/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+dist/
+build/
+.terraform/

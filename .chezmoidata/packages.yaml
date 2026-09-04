@@ -1,0 +1,157 @@
+# Single source of truth for everything Homebrew installs.
+# Edit this file, run `chezmoi apply`, and brew bundle re-runs automatically.
+#
+# Groups are installed in order. The `personal` group is only installed on
+# machines where `chezmoi init` was answered "yes" to the personal prompt.
+
+packages:
+  taps:
+    - hashicorp/tap
+    - pulumi/tap
+    - dopplerhq/doppler
+    - ngrok/ngrok
+    - xcodesorg/made
+
+  # ---------------------------------------------------------------------
+  # cli-core: shell, git, and everyday terminal tools
+  # ---------------------------------------------------------------------
+  cli-core:
+    brews:
+      - git
+      - gh
+      - git-lfs
+      - gnupg
+      - fzf
+      - yq
+      - neovim
+      - sevenzip
+      - socat
+      - pstree
+      - chezmoi
+      - mas
+      - worktrunk
+    casks:
+      - 1password-cli
+
+  # ---------------------------------------------------------------------
+  # runtimes: language managers. The runtimes themselves are installed by
+  # .chezmoiscripts/run_onchange_after_20-runtimes.sh.tmpl
+  # ---------------------------------------------------------------------
+  runtimes:
+    brews:
+      - nvm            # Node
+      - uv             # Python (also replaces pipx/venv)
+      - chruby         # Ruby switcher
+      - ruby-install   # Ruby builder
+      - go
+      - openjdk
+
+  # ---------------------------------------------------------------------
+  # engineering-apps: the tools used to write and ship software
+  # ---------------------------------------------------------------------
+  engineering-apps:
+    casks:
+      - visual-studio-code
+      - claude-code
+      - claude
+      - ghostty
+      - iterm2
+      - dbeaver-community
+      - docker-desktop
+      - ngrok
+      - font-fira-code
+      - 1password
+      - raycast
+      - rectangle
+      - google-chrome
+    # VS Code extensions are installed by brew bundle too.
+    # Capture new ones with: code --list-extensions
+    vscode:
+      - charliermarsh.ruff              # Python lint + format
+      - ms-python.python
+      - ms-python.vscode-pylance
+      - esbenp.prettier-vscode          # JS/TS/JSON/YAML format
+      - dbaeumer.vscode-eslint
+      - golang.go
+      - hashicorp.terraform
+      - ms-azuretools.vscode-docker
+      - ms-kubernetes-tools.vscode-kubernetes-tools
+      - redhat.vscode-yaml
+      - tamasfe.even-better-toml
+      - eamodio.gitlens
+      - github.vscode-pull-request-github
+      - anthropic.claude-code
+
+  # ---------------------------------------------------------------------
+  # cloud-infra: kubernetes, terraform, cloud CLIs, CI, databases
+  # ---------------------------------------------------------------------
+  cloud-infra:
+    brews:
+      - kubernetes-cli
+      - helm
+      - k9s
+      - kubectx
+      - minikube
+      - skaffold
+      - crane
+      - hashicorp/tap/terraform
+      - terragrunt
+      - terraform-docs
+      - pulumi/tap/pulumi
+      - dopplerhq/doppler/doppler
+      - act
+      - hadolint
+      - golangci-lint
+      - temporal
+      - postgresql@14
+    casks:
+      - gcloud-cli
+
+  # ---------------------------------------------------------------------
+  # apple-mobile: iOS and Android development
+  # ---------------------------------------------------------------------
+  apple-mobile:
+    brews:
+      - xcodesorg/made/xcodes
+      - ideviceinstaller
+    casks:
+      - android-studio
+    mas:
+      - name: Apple Configurator
+        id: 1037126344
+
+  # ---------------------------------------------------------------------
+  # collaboration: work communication and documentation
+  # ---------------------------------------------------------------------
+  collaboration:
+    casks:
+      - slack
+      - loom
+      - obsidian
+      - rippling
+      - logitune
+
+  # ---------------------------------------------------------------------
+  # personal: only installed on machines flagged personal at init time
+  # ---------------------------------------------------------------------
+  personal:
+    casks:
+      - spotify
+      - discord
+      - clocker
+
+  # ---------------------------------------------------------------------
+  # optional-ides: uncomment an entry to install it on the next apply
+  # ---------------------------------------------------------------------
+  optional-ides:
+    casks: []
+      # - cursor
+      # - goland
+      # - webstorm
+
+# Versions installed by the runtimes script. Changing any value here makes
+# chezmoi re-run that script on the next apply.
+runtimes:
+  node: "--lts"
+  python: "3.13"
+  ruby: "3.4"

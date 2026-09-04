@@ -1,0 +1,27 @@
+{{ if eq .chezmoi.os "darwin" -}}
+#!/bin/bash
+# Full Xcode via `xcodes`. Requires an interactive Apple ID sign-in, so this
+# runs once and is skipped whenever any Xcode is already present.
+set -euo pipefail
+
+XCODE_VERSION="26.1.1"
+
+if ls -d /Applications/Xcode*.app >/dev/null 2>&1; then
+    echo "[xcode] An Xcode is already installed, skipping."
+    exit 0
+fi
+
+if ! command -v xcodes >/dev/null 2>&1; then
+    echo "[xcode] xcodes not installed, skipping." >&2
+    exit 0
+fi
+
+if [ ! -t 0 ]; then
+    echo "[xcode] Not an interactive terminal. Install Xcode later with:"
+    echo "        xcodes install ${XCODE_VERSION} --select"
+    exit 0
+fi
+
+echo "[xcode] Installing Xcode ${XCODE_VERSION} (Apple ID sign-in required)..."
+xcodes install "${XCODE_VERSION}" --select
+{{ end -}}

@@ -1,0 +1,10 @@
+# Managed by chezmoi. Edit the source, or run `chezmoi re-add ~/.zshrc`.
+# Everything lives in ~/.config/zsh/*.zsh so each concern stays separate.
+
+for _conf in "$HOME/.config/zsh"/*.zsh; do
+    [ -r "$_conf" ] && source "$_conf"
+done
+unset _conf
+
+# Machine-local overrides, never committed.
+[ -r "$HOME/.zshrc.local" ] && source "$HOME/.zshrc.local"

@@ -1,0 +1,15 @@
+# Managed by chezmoi. Keys live in 1Password; the agent does the signing.
+Host *
+    UseKeychain yes
+    AddKeysToAgent yes
+    IdentityAgent "~/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
+
+Host github.com
+    User git
+    HostName github.com
+    PreferredAuthentications publickey
+
+Host gitlab.com
+    User git
+    HostName gitlab.com
+    PreferredAuthentications publickey

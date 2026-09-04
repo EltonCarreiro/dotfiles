@@ -1,0 +1,76 @@
+{{ if eq .chezmoi.os "darwin" -}}
+#!/bin/bash
+# Installs the language runtimes themselves. The managers come from the
+# Brewfile; the versions come from .chezmoidata/packages.yaml, so bumping a
+# version there makes chezmoi re-run this script.
+#
+# node:   {{ .runtimes.node }}
+# python: {{ .runtimes.python }}
+# ruby:   {{ .runtimes.ruby }}
+set -euo pipefail
+
+BREW_PREFIX="$(brew --prefix)"
+
+# ---------------------------------------------------------------- Node / nvm
+export NVM_DIR="$HOME/.nvm"
+mkdir -p "$NVM_DIR"
+if [ -s "$BREW_PREFIX/opt/nvm/nvm.sh" ]; then
+    # shellcheck disable=SC1091
+    . "$BREW_PREFIX/opt/nvm/nvm.sh"
+    if [ "$(nvm version default 2>/dev/null)" != "N/A" ] && [ -n "$(nvm version default 2>/dev/null)" ]; then
+        echo "[node] Default Node $(nvm version default) already installed, skipping."
+    else
+        echo "[node] Installing Node {{ .runtimes.node }}..."
+        nvm install {{ .runtimes.node }}
+        nvm alias default {{ if eq .runtimes.node "--lts" }}'lts/*'{{ else }}{{ .runtimes.node | quote }}{{ end }}
+    fi
+else
+    echo "[node] nvm not found, skipping." >&2
+fi
+
+# ------------------------------------------------------------- Python / uv
+if command -v uv >/dev/null 2>&1; then
+    echo "[python] Ensuring CPython {{ .runtimes.python }}..."
+    uv python install {{ .runtimes.python | quote }}
+
+    # Global Python CLI tools, one per line in ~/.config/uv/tools.txt
+    TOOLS="$HOME/.config/uv/tools.txt"
+    if [ -f "$TOOLS" ]; then
+        while IFS= read -r tool; do
+            case "$tool" in ''|\#*) continue ;; esac
+            echo "[python] uv tool install $tool"
+            uv tool install --quiet "$tool" || echo "[python] failed: $tool" >&2
+        done < "$TOOLS"
+    fi
+else
+    echo "[python] uv not found, skipping." >&2
+fi
+
+# ------------------------------------------------ Ruby / chruby + ruby-install
+if command -v ruby-install >/dev/null 2>&1; then
+    if [ -d "$HOME/.rubies/ruby-{{ .runtimes.ruby }}" ]; then
+        echo "[ruby] {{ .runtimes.ruby }} already installed, skipping."
+    else
+        echo "[ruby] Installing Ruby {{ .runtimes.ruby }} (compiles from source)..."
+        ruby-install --no-reinstall ruby {{ .runtimes.ruby }}
+    fi
+else
+    echo "[ruby] ruby-install not found, skipping." >&2
+fi
+
+# ------------------------------------------------------------------- Java
+# Make the Homebrew JDK visible to /usr/libexec/java_home and to Android tooling.
+JDK_SRC="$BREW_PREFIX/opt/openjdk/libexec/openjdk.jdk"
+JDK_DST="/Library/Java/JavaVirtualMachines/openjdk.jdk"
+if [ -d "$JDK_SRC" ] && [ ! -e "$JDK_DST" ]; then
+    if sudo -n true 2>/dev/null; then
+        echo "[java] Linking the Homebrew JDK system-wide..."
+        sudo -n ln -sfn "$JDK_SRC" "$JDK_DST"
+    else
+        echo "[java] Skipped. To make the JDK system-wide, run:"
+        echo "       sudo ln -sfn \"$JDK_SRC\" \"$JDK_DST\""
+    fi
+fi
+
+echo "[runtimes] Done."
+{{ end -}}

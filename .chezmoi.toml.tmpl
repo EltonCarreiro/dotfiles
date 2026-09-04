@@ -1,0 +1,18 @@
+{{/* Asked once per machine on `chezmoi init`, then stored in
+     ~/.config/chezmoi/chezmoi.toml and never asked again. */}}
+{{- $name     := promptStringOnce . "name" "Full name for git commits" -}}
+{{- $email    := promptStringOnce . "email" "Email address for git commits" -}}
+{{- $personal := promptBoolOnce . "personal" "Is this a personal machine (install Spotify, Discord, Clocker)" false -}}
+{{- $signingKey := promptStringOnce . "signingKey" "SSH public key for git signing (paste from 1Password, or leave blank)" "" -}}
+
+[data]
+    name = {{ $name | quote }}
+    email = {{ $email | quote }}
+    personal = {{ $personal }}
+    signingKey = {{ $signingKey | quote }}
+
+[diff]
+    exclude = ["scripts"]
+
+[status]
+    exclude = ["scripts"]

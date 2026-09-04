@@ -1,0 +1,60 @@
+{{ if eq .chezmoi.os "darwin" -}}
+#!/bin/bash
+# Installs every Homebrew package, cask, App Store app and VS Code extension
+# declared in .chezmoidata/packages.yaml.
+#
+# chezmoi hashes this rendered file: brew bundle runs only when the package
+# list actually changes, not on every apply.
+set -euo pipefail
+
+if ! command -v brew >/dev/null 2>&1; then
+    if [ -x /opt/homebrew/bin/brew ]; then eval "$(/opt/homebrew/bin/brew shellenv)"
+    elif [ -x /usr/local/bin/brew ]; then eval "$(/usr/local/bin/brew shellenv)"
+    else echo "[packages] Homebrew not found; aborting." >&2; exit 1
+    fi
+fi
+
+echo "[packages] Applying Brewfile (this can take a while on a new machine)..."
+
+# --adopt lets brew take ownership of an app that was installed by hand
+# instead of failing because the .app already exists.
+export HOMEBREW_CASK_OPTS="${HOMEBREW_CASK_OPTS:---adopt}"
+
+# brew bundle keeps going past a failed entry and reports at the end. Do not
+# let one unavailable package stop chezmoi from applying the dotfiles.
+set +e
+brew bundle --file=/dev/stdin <<'BREWFILE'
+{{ range .packages.taps -}}
+tap {{ . | quote }}
+{{ end }}
+{{- $groups := list "cli-core" "runtimes" "engineering-apps" "cloud-infra" "apple-mobile" "collaboration" "optional-ides" -}}
+{{- if .personal -}}
+{{- $groups = append $groups "personal" -}}
+{{- end -}}
+{{- range $group := $groups }}
+# --- {{ $group }} ---
+{{- $g := index $.packages $group }}
+{{- range (default (list) (index $g "brews")) }}
+brew {{ . | quote }}
+{{- end }}
+{{- range (default (list) (index $g "casks")) }}
+cask {{ . | quote }}
+{{- end }}
+{{- range (default (list) (index $g "mas")) }}
+mas {{ .name | quote }}, id: {{ .id }}
+{{- end }}
+{{- range (default (list) (index $g "vscode")) }}
+vscode {{ . | quote }}
+{{- end }}
+{{ end -}}
+BREWFILE
+BUNDLE_STATUS=$?
+set -e
+
+if [ "$BUNDLE_STATUS" -ne 0 ]; then
+    echo "[packages] WARNING: some packages failed to install (exit ${BUNDLE_STATUS})." >&2
+    echo "[packages] Re-run this step later with: chezmoi state delete-bucket --bucket=scriptState && chezmoi apply" >&2
+else
+    echo "[packages] Done."
+fi
+{{ end -}}
