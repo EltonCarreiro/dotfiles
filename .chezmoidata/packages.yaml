@@ -8,7 +8,6 @@ packages:
   taps:
     - hashicorp/tap
     - pulumi/tap
-    - dopplerhq/doppler
     - ngrok/ngrok
     - xcodesorg/made
 
@@ -98,7 +97,7 @@ packages:
       - terragrunt
       - terraform-docs
       - pulumi/tap/pulumi
-      - dopplerhq/doppler/doppler
+      - doppler                        # moved from dopplerhq/doppler into homebrew-core
       - act
       - hadolint
       - golangci-lint
