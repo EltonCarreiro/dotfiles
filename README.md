@@ -94,6 +94,13 @@ No Homebrew cask exists for these, so install them by hand if you want them:
 - Dia (browser)
 - Habbo Launcher
 
+**Apple Configurator** is a free Mac App Store app, but `mas` can only download
+it if the Apple Account signed in to the App Store has acquired it before.
+If you see "Redownload Unavailable with This Apple Account", open the App Store,
+search for Apple Configurator and click **Get** once. After that it belongs to
+your account, and you can uncomment the `mas:` block in the `apple-mobile` group
+of `.chezmoidata/packages.yaml` so future machines install it automatically.
+
 ## Layout
 
 ```
