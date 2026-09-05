@@ -14,6 +14,15 @@ if ! command -v brew >/dev/null 2>&1; then
     fi
 fi
 
+# Homebrew 6 refuses to load formulae from third-party taps until they are
+# explicitly trusted. Trusting a tap means allowing its maintainers' code to
+# run during installs, so this list is deliberately limited to the taps
+# declared in packages.yaml.
+echo "[packages] Trusting declared third-party taps..."
+{{ range .packages.taps -}}
+brew tap {{ . | quote }} >/dev/null 2>&1 || true
+brew trust --tap {{ . | quote }} >/dev/null 2>&1 || true
+{{ end }}
 echo "[packages] Applying Brewfile (this can take a while on a new machine)..."
 
 # --adopt lets brew take ownership of an app that was installed by hand

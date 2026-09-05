@@ -23,6 +23,21 @@ personal machine, git signing key), then runs, in order:
 
 Budget an hour, mostly downloads. Ruby compiles from source and Xcode is a large download.
 
+Run it from a real terminal, not from a script or an SSH session without a TTY.
+Several casks (Docker Desktop, 1Password, Slack) need `sudo` to place privileged
+helpers, and Xcode needs an Apple ID. Those steps prompt and will fail silently
+if nothing can answer them.
+
+If the package step reports failures, fix the cause and re-run just that step:
+
+```bash
+chezmoi state delete-bucket --bucket=scriptState
+chezmoi apply
+```
+
+That clears the record of which scripts have run, so the next apply re-runs them.
+It is safe: every script is idempotent.
+
 ## What is installed
 
 Package groups live in `.chezmoidata/packages.yaml`:
