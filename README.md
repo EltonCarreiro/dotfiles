@@ -31,12 +31,21 @@ if nothing can answer them.
 If the package step reports failures, fix the cause and re-run just that step:
 
 ```bash
-chezmoi state delete-bucket --bucket=scriptState
+chezmoi state delete --bucket=entryState --key="$HOME/.chezmoiscripts/10-packages.sh"
 chezmoi apply
 ```
 
-That clears the record of which scripts have run, so the next apply re-runs them.
-It is safe: every script is idempotent.
+`run_onchange_` scripts record their content hash in the `entryState` bucket, so
+deleting that one key makes the next apply re-run that one script. The
+`scriptState` bucket is a different thing: it belongs to `run_once_` scripts, and
+clearing it will not re-run the package step.
+
+To re-run every script, delete each key under `.chezmoiscripts/`. All of them are
+idempotent, so this is safe. List them with:
+
+```bash
+chezmoi state dump | grep chezmoiscripts
+```
 
 ## What is installed
 
