@@ -1,0 +1,7 @@
+# Which 1Password vaults the SSH agent may offer keys from.
+# Without this file the agent only exposes the Personal/Private vault, and
+# `ssh-add -l` reports "The agent has no identities".
+# Docs: https://developer.1password.com/docs/ssh/agent/config/
+
+[[ssh-keys]]
+vault = "SSHs"
