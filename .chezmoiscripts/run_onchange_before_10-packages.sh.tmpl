@@ -62,7 +62,11 @@ set -e
 
 if [ "$BUNDLE_STATUS" -ne 0 ]; then
     echo "[packages] WARNING: some packages failed to install (exit ${BUNDLE_STATUS})." >&2
-    echo "[packages] Re-run this step later with: chezmoi state delete-bucket --bucket=scriptState && chezmoi apply" >&2
+    echo "[packages] brew bundle stops the whole batch on a fatal error, so entries" >&2
+    echo "[packages] after the first one may have failed only as collateral. Read the" >&2
+    echo "[packages] first Error: line above before assuming each one is a real failure." >&2
+    echo "[packages] Re-run this step with:" >&2
+    echo "[packages]   chezmoi state delete --bucket=entryState --key=\"\$HOME/.chezmoiscripts/10-packages.sh\" && chezmoi apply" >&2
 else
     echo "[packages] Done."
 fi
