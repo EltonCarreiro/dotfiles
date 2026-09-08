@@ -9,6 +9,15 @@
 # ruby:   {{ .runtimes.ruby }}
 set -euo pipefail
 
+# On first run the shell that launched chezmoi predates Homebrew, so brew is
+# not on PATH yet even though 01-homebrew.sh just installed it.
+if ! command -v brew >/dev/null 2>&1; then
+    if [ -x /opt/homebrew/bin/brew ]; then eval "$(/opt/homebrew/bin/brew shellenv)"
+    elif [ -x /usr/local/bin/brew ]; then eval "$(/usr/local/bin/brew shellenv)"
+    else echo "[runtimes] Homebrew not found; aborting." >&2; exit 1
+    fi
+fi
+
 BREW_PREFIX="$(brew --prefix)"
 
 # ---------------------------------------------------------------- Node / nvm

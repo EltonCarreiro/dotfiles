@@ -5,15 +5,26 @@
 set -euo pipefail
 
 XCODE_VERSION="26.1.1"
+XCODES_VERSION="2.0.3"
+XCODES_ZIP="https://github.com/XcodesOrg/xcodes/releases/download/${XCODES_VERSION}/xcodes.zip"
+BIN_DIR="$HOME/.local/bin"
+export PATH="$BIN_DIR:$PATH"
 
 if ls -d /Applications/Xcode*.app >/dev/null 2>&1; then
     echo "[xcode] An Xcode is already installed, skipping."
     exit 0
 fi
 
+# The xcodes Homebrew formula has no bottle for current macOS and building it
+# needs Xcode, so install the project's prebuilt, notarized binary instead.
 if ! command -v xcodes >/dev/null 2>&1; then
-    echo "[xcode] xcodes not installed, skipping." >&2
-    exit 0
+    echo "[xcode] Installing xcodes ${XCODES_VERSION} into ${BIN_DIR}..."
+    mkdir -p "$BIN_DIR"
+    tmp="$(mktemp -d)"
+    curl -fsSL -o "$tmp/xcodes.zip" "$XCODES_ZIP"
+    unzip -q -o "$tmp/xcodes.zip" -d "$tmp"
+    install -m 0755 "$tmp/xcodes" "$BIN_DIR/xcodes"
+    rm -rf "$tmp"
 fi
 
 if [ ! -t 0 ]; then

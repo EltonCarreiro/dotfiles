@@ -9,7 +9,6 @@ packages:
     - hashicorp/tap
     - pulumi/tap
     - ngrok/ngrok
-    - xcodesorg/made
 
   # ---------------------------------------------------------------------
   # cli-core: shell, git, and everyday terminal tools
@@ -110,8 +109,11 @@ packages:
   # apple-mobile: iOS and Android development
   # ---------------------------------------------------------------------
   apple-mobile:
+    # xcodes (the Xcode installer CLI) is deliberately not listed here. Its
+    # Homebrew formula has no bottle for current macOS, so brew compiles it
+    # from source, which needs a full Xcode: the very thing xcodes installs.
+    # run_once_after_30-xcode.sh downloads the prebuilt binary instead.
     brews:
-      - xcodesorg/made/xcodes
       - ideviceinstaller
     casks:
       - android-studio

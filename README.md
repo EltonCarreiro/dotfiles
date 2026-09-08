@@ -29,7 +29,7 @@ then runs, in order:
 3. `brew bundle` for every package group
 4. Dotfiles into `$HOME`
 5. Language runtimes (Node LTS, Python 3.13, Ruby 3.4)
-6. Xcode via `xcodes` (needs an Apple ID sign-in)
+6. Xcode via `xcodes` (prebuilt binary into `~/.local/bin`; needs an Apple ID sign-in)
 7. macOS system preferences
 
 Budget an hour, mostly downloads. Ruby compiles from source and Xcode is a large download.
@@ -68,7 +68,7 @@ Package groups live in `.chezmoidata/packages.yaml`:
 | `runtimes` | nvm, uv, chruby, ruby-install, go, openjdk |
 | `engineering-apps` | VS Code, Claude Code, Claude, Ghostty, iTerm2, DBeaver, Docker, ngrok, 1Password, Raycast, Rectangle, Chrome |
 | `cloud-infra` | kubectl, helm, k9s, minikube, skaffold, terraform, terragrunt, pulumi, gcloud, doppler, act, postgres |
-| `apple-mobile` | xcodes, ideviceinstaller, Android Studio, Apple Configurator |
+| `apple-mobile` | ideviceinstaller, Android Studio, Apple Configurator. `xcodes` itself comes from the Xcode script, not Homebrew |
 | `collaboration` | Slack, Loom, Obsidian, Rippling, Logi Tune |
 | `personal` | Spotify, Discord, Clocker. Only on machines answered "personal = yes" |
 | `optional-ides` | Cursor, GoLand, WebStorm. Commented out; uncomment to install |
