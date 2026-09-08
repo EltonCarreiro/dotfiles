@@ -7,13 +7,24 @@ renders from `.chezmoidata/packages.yaml`.
 ## Bootstrap a new Mac
 
 ```bash
-sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply eltoon
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/eltoncarreiro/dotfiles/main/bootstrap.sh)"
 ```
 
-Replace `eltoon` with your GitHub username. chezmoi asks four questions (name, email,
-personal machine, git signing key), then runs, in order:
+That works on a factory-fresh Mac with nothing installed. `bootstrap.sh` installs
+the Xcode Command Line Tools headlessly (git on a new Mac is only a stub until
+they exist, and chezmoi needs git to clone this repo), installs chezmoi, and then
+runs `chezmoi init --apply eltoncarreiro`. Set `GITHUB_USER` to point it at a fork.
 
-1. Xcode Command Line Tools
+If the Command Line Tools are already present you can skip the wrapper:
+
+```bash
+sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply eltoncarreiro
+```
+
+chezmoi asks four questions (name, email, personal machine, git signing key),
+then runs, in order:
+
+1. Xcode Command Line Tools (no-op after bootstrap.sh)
 2. Homebrew
 3. `brew bundle` for every package group
 4. Dotfiles into `$HOME`
@@ -113,6 +124,7 @@ of `.chezmoidata/packages.yaml` so future machines install it automatically.
 ## Layout
 
 ```
+bootstrap.sh                one-command entry point for a blank Mac
 .chezmoi.toml.tmpl          prompts asked once per machine
 .chezmoidata/packages.yaml  every package, grouped by purpose
 .chezmoiscripts/            ordered lifecycle scripts

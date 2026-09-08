@@ -1,6 +1,7 @@
 README.md
 LICENSE
 .gitignore
+bootstrap.sh
 
 {{- if not .personal }}
 # Nothing personal-only is managed as a file yet, but this is where it goes.
