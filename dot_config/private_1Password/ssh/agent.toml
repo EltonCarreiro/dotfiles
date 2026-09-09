@@ -1,7 +1,14 @@
 # Which 1Password vaults the SSH agent may offer keys from.
-# Without this file the agent only exposes the Personal/Private vault, and
-# `ssh-add -l` reports "The agent has no identities".
+#
+# The agent exposes nothing until this file lists a vault that actually
+# exists: a wrong or missing name makes `ssh-add -l` report "The agent has
+# no identities", and every git-over-SSH push then fails with
+# "Permission denied (publickey)".
+#
+# "Personal" is the default vault name for a 1Password individual account.
+# Check yours with `op vault list` and change it here if it differs.
+#
 # Docs: https://developer.1password.com/docs/ssh/agent/config/
 
 [[ssh-keys]]
-vault = "SSHs"
+vault = "Personal"

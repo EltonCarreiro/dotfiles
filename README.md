@@ -92,10 +92,26 @@ To change a runtime version, edit the `runtimes:` block at the bottom of the sam
 These need a human because they involve signing in or accepting a licence.
 
 - [ ] 1Password: sign in, then Settings → Developer → enable **Use the SSH agent**
-      and **Integrate with 1Password CLI**
-- [ ] Add your SSH public key to GitHub, and paste it into
-      `~/.config/chezmoi/chezmoi.toml` as `signingKey` to turn on commit signing
+      and **Integrate with 1Password CLI**. Confirm the vault holding your SSH
+      key matches the one in `dot_config/private_1Password/ssh/agent.toml`
+      (`op vault list`), then check the agent sees it: `ssh-add -l`
 - [ ] `gh auth login`
+- [ ] Register the key with GitHub, for login and for commit signing:
+
+      ```bash
+      gh auth refresh -h github.com -s admin:public_key,admin:ssh_signing_key
+      op item get "GH" --fields "public key" > /tmp/id.pub
+      gh ssh-key add /tmp/id.pub --title "$(scutil --get ComputerName)"
+      gh ssh-key add /tmp/id.pub --title "$(scutil --get ComputerName)" --type signing
+      rm /tmp/id.pub
+      ```
+
+- [ ] Turn on commit signing by putting that same public key into
+      `~/.config/chezmoi/chezmoi.toml` as `signingKey`, then `chezmoi apply`:
+
+      ```bash
+      chezmoi apply ~/.gitconfig ~/.config/git
+      ```
 - [ ] `gcloud auth login && gcloud auth application-default login`
 - [ ] `doppler login`
 - [ ] Docker Desktop: open once and accept the licence
