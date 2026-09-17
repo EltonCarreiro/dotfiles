@@ -1,4 +1,9 @@
 # Installed automatically into every Node version nvm installs.
-# One package name per line.
+# One npm package spec per line.
 npm-check-updates
 typescript
+# pnpm stays on 11 until Nx supports 12 (engineering/coding-conventions/node).
+# Homebrew only ships the latest major, so it is installed from npm instead.
+pnpm@11
+# go-ios: the `ios` CLI for talking to iOS devices. It has no Homebrew formula.
+go-ios

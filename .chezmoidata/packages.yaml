@@ -28,6 +28,8 @@ packages:
       - chezmoi
       - mas
       - worktrunk
+      - shellcheck      # shell linter; see docs/shell
+      - shfmt           # shell formatter; configured through .editorconfig
     casks:
       - 1password-cli
 
@@ -115,6 +117,7 @@ packages:
     # run_once_after_30-xcode.sh downloads the prebuilt binary instead.
     brews:
       - ideviceinstaller
+      - swiftlint       # Swift linter; swift-format ships with Xcode. See docs/swift
     casks:
       - android-studio
     # Apple Configurator is a free Mac App Store app, but `mas` can only
@@ -157,6 +160,23 @@ packages:
 # Versions installed by the runtimes script. Changing any value here makes
 # chezmoi re-run that script on the next apply.
 runtimes:
-  node: "--lts"
+  node: "26"
   python: "3.13"
   ruby: "3.4"
+
+# Xcode and the simulator runtimes, installed by
+# .chezmoiscripts/run_onchange_after_30-xcode.sh.tmpl with `xcodes`. Both
+# downloads are large and need an Apple ID, so that script does nothing
+# outside an interactive terminal. Changing a value here makes it re-run.
+#
+# simulator_runtimes: one per line, exactly as `xcodes runtimes` prints them.
+# Keep the major version in step with the devices being automated: DeviceTalk
+# targets an iPhone 16 on iOS 26.
+# Keep xcodes_version current: Apple changes its sign-in flow often, and an
+# older xcodes fails with a 404 when it tries to log in (2.0.3 could not
+# install Xcode 27; 2.1.0 fixed it).
+xcode:
+  version: "27.0"
+  xcodes_version: "2.1.0"
+  simulator_runtimes:
+    - "iOS 26.5"

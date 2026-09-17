@@ -1,0 +1,73 @@
+{{ if eq .chezmoi.os "darwin" -}}
+#!/bin/bash
+# Xcode and the iOS simulator runtimes, through `xcodes`. Versions come from
+# .chezmoidata/packages.yaml, so bumping one there makes chezmoi re-run this.
+#
+# xcode:   {{ .xcode.version }}
+# xcodes:  {{ .xcode.xcodes_version }}
+# sims:    {{ .xcode.simulator_runtimes | join ", " }}
+#
+# Both downloads are tens of gigabytes and need an Apple ID sign-in with 2FA,
+# so nothing is installed outside an interactive terminal: the script prints
+# the commands instead. It never removes an older Xcode.
+set -euo pipefail
+
+XCODE_VERSION="{{ .xcode.version }}"
+XCODES_VERSION="{{ .xcode.xcodes_version }}"
+XCODES_ZIP="https://github.com/XcodesOrg/xcodes/releases/download/${XCODES_VERSION}/xcodes.zip"
+BIN_DIR="$HOME/.local/bin"
+export PATH="$BIN_DIR:$PATH"
+
+# The xcodes Homebrew formula has no bottle for current macOS and building it
+# needs Xcode, so install the project's prebuilt, notarized binary instead.
+if ! command -v xcodes >/dev/null 2>&1 \
+    || [ "$(xcodes version 2>/dev/null)" != "$XCODES_VERSION" ]; then
+    echo "[xcode] Installing xcodes ${XCODES_VERSION} into ${BIN_DIR}..."
+    mkdir -p "$BIN_DIR"
+    tmp="$(mktemp -d)"
+    trap 'rm -rf "$tmp"' EXIT
+    curl -fsSL -o "$tmp/xcodes.zip" "$XCODES_ZIP"
+    unzip -q -o "$tmp/xcodes.zip" -d "$tmp"
+    install -m 0755 "$tmp/xcodes" "$BIN_DIR/xcodes"
+fi
+
+# `xcodes installed` lists one release per line, starting with its version.
+xcode_present() {
+    xcodes installed 2>/dev/null | grep -q "^${XCODE_VERSION} "
+}
+
+# `xcodes runtimes` marks what is already there; the rest are installable.
+runtime_present() {
+    xcodes runtimes 2>/dev/null | grep -F "$1" | grep -qi "installed"
+}
+
+missing_runtimes=()
+{{ range .xcode.simulator_runtimes -}}
+runtime_present {{ . | quote }} || missing_runtimes+=({{ . | quote }})
+{{ end }}
+if xcode_present && [ ${#missing_runtimes[@]} -eq 0 ]; then
+    echo "[xcode] Xcode ${XCODE_VERSION} and every declared runtime are installed."
+    exit 0
+fi
+
+if [ ! -t 0 ]; then
+    echo "[xcode] Not an interactive terminal, so nothing was installed. Run:"
+    xcode_present || echo "        xcodes install ${XCODE_VERSION} --select"
+    for runtime in ${missing_runtimes+"${missing_runtimes[@]}"}; do
+        echo "        xcodes runtimes install \"${runtime}\""
+    done
+    exit 0
+fi
+
+if ! xcode_present; then
+    echo "[xcode] Installing Xcode ${XCODE_VERSION} (Apple ID sign-in required)..."
+    xcodes install "${XCODE_VERSION}" --select
+fi
+
+for runtime in ${missing_runtimes+"${missing_runtimes[@]}"}; do
+    echo "[xcode] Installing simulator runtime ${runtime}..."
+    xcodes runtimes install "${runtime}"
+done
+
+echo "[xcode] Done."
+{{ end -}}

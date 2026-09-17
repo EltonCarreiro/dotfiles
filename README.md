@@ -28,7 +28,7 @@ then runs, in order:
 2. Homebrew
 3. `brew bundle` for every package group
 4. Dotfiles into `$HOME`
-5. Language runtimes (Node LTS, Python 3.13, Ruby 3.4)
+5. Language runtimes (Node 26, Python 3.13, Ruby 3.4) and the global npm tools in `~/.nvm/default-packages`
 6. Xcode via `xcodes` (prebuilt binary into `~/.local/bin`; needs an Apple ID sign-in)
 7. macOS system preferences
 

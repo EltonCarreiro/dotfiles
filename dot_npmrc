@@ -1,0 +1,4 @@
+# Managed by chezmoi.
+# go-ios places its binary from a postinstall script; npm 12 blocks install
+# scripts that are not on this list.
+allow-scripts=go-ios
