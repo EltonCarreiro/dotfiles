@@ -11,7 +11,7 @@
   "editor.minimap.enabled": false,
   "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {
-    "source.organizeImports": "explicit"
+    "source.organizeImports": "explicit",
   },
   "editor.stickyScroll.enabled": true,
   "editor.suggestSelection": "first",
@@ -26,7 +26,7 @@
     "**/.DS_Store": true,
     "**/__pycache__": true,
     "**/.ruff_cache": true,
-    "**/.pytest_cache": true
+    "**/.pytest_cache": true,
   },
 
   // ---- Terminal ----
@@ -48,11 +48,11 @@
   // ---- Language specifics ----
   "[python]": {
     "editor.defaultFormatter": "charliermarsh.ruff",
-    "editor.tabSize": 4
+    "editor.tabSize": 4,
   },
   "[go]": {
     "editor.insertSpaces": false,
-    "editor.tabSize": 4
+    "editor.tabSize": 4,
   },
   "[javascript]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
   "[typescript]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
@@ -63,5 +63,6 @@
 
   // ---- Telemetry ----
   "telemetry.telemetryLevel": "off",
-  "redhat.telemetry.enabled": false
+  "redhat.telemetry.enabled": false,
+  "security.promptForLocalFileProtocolHandling": false,
 }
