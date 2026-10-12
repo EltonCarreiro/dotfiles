@@ -20,6 +20,8 @@ then apply, so a fresh machine ends up identical.
 | Global Python CLIs | `dot_config/uv/tools.txt` |
 | Ruby version | `runtimes.ruby` in `.chezmoidata/packages.yaml` |
 | Shell configuration | `dot_config/zsh/*.zsh`, one concern per file |
+| Claude Code settings, plugins and their marketplaces | `dot_claude/settings.json`; `run_onchange_after_50-claude-plugins.sh.tmpl` installs what it enables |
+| User-level Claude Code skills | `dot_claude/skills/<name>/` |
 
 - pnpm is pinned to major 11 and comes from npm, not Homebrew, which only
   ships the latest major.
@@ -29,6 +31,9 @@ then apply, so a fresh machine ends up identical.
   `chezmoi apply --include=scripts` to re-run changed install scripts. Run
   `chezmoi diff` first: a plain `chezmoi apply` overwrites local drift, such as
   the lines Docker Desktop appends to `~/.zshrc` and `~/.zprofile`.
+- Claude Code writes to `~/.claude/settings.json` itself (`/plugin`, `/config`).
+  After such a change, `chezmoi re-add ~/.claude/settings.json` so the source
+  keeps up; a plain apply would revert it.
 - Leave the dotfiles change uncommitted unless asked to commit, and say so.
 
 ## Preferences

@@ -1,0 +1,40 @@
+{{ if eq .chezmoi.os "darwin" -}}
+#!/bin/bash
+# Installs the Claude Code plugins that ~/.claude/settings.json enables, from
+# the marketplaces it declares. Claude Code only records them there; the plugin
+# files themselves live in ~/.claude/plugins, which is not managed. Editing
+# dot_claude/settings.json makes chezmoi re-run this script.
+#
+# settings.json sha256: {{ include "dot_claude/settings.json" | sha256sum }}
+set -euo pipefail
+
+if ! command -v claude >/dev/null 2>&1; then
+    echo "[claude-plugins] claude CLI not found, skipping." >&2
+    exit 0
+fi
+
+SETTINGS="$HOME/.claude/settings.json"
+
+python3 -I - "$SETTINGS" <<'PY' | while IFS=$'\t' read -r kind value; do
+import json, sys
+settings = json.load(open(sys.argv[1]))
+for source in settings.get("extraKnownMarketplaces", {}).values():
+    repo = source.get("source", {}).get("repo")
+    if repo:
+        print(f"marketplace\t{repo}")
+for plugin, enabled in settings.get("enabledPlugins", {}).items():
+    if enabled:
+        print(f"plugin\t{plugin}")
+PY
+    case "$kind" in
+        marketplace)
+            echo "[claude-plugins] marketplace $value"
+            claude plugin marketplace add "$value" >/dev/null \
+                || echo "[claude-plugins] failed: marketplace $value" >&2 ;;
+        plugin)
+            echo "[claude-plugins] plugin $value"
+            claude plugin install "$value" --scope user >/dev/null \
+                || echo "[claude-plugins] failed: plugin $value" >&2 ;;
+    esac
+done
+{{ end -}}

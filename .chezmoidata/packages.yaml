@@ -45,6 +45,7 @@ packages:
       - ruby-install   # Ruby builder
       - go
       - openjdk
+      - bun            # JS runtime; required by the claude-mem plugin
 
   # ---------------------------------------------------------------------
   # engineering-apps: the tools used to write and ship software

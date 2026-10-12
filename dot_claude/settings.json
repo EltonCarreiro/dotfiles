@@ -1,0 +1,31 @@
+{
+  "enabledPlugins": {
+    "workspace-console@workspace-console": true,
+    "claude-mem@thedotmack": true,
+    "impeccable@impeccable": true
+  },
+  "extraKnownMarketplaces": {
+    "workspace-console": {
+      "source": {
+        "source": "github",
+        "repo": "EltonCarreiro/workspace-console"
+      }
+    },
+    "thedotmack": {
+      "source": {
+        "source": "github",
+        "repo": "thedotmack/claude-mem"
+      }
+    },
+    "impeccable": {
+      "source": {
+        "source": "github",
+        "repo": "pbakaus/impeccable"
+      }
+    }
+  },
+  "theme": "dark",
+  "env": {
+    "CLAUDE_MEM_TELEMETRY": "0"
+  }
+}
