@@ -3,6 +3,17 @@
 Every work repository is cloned into `~/work/repos/<name>`. Nothing else lives
 in `~/work`.
 
+## Clones stay on their default branch; branch work uses a worktree
+
+Several sessions work in the same clone at once, and they commit there on the
+default branch. Switching that clone to another branch sends their commits to
+it. So never `git switch` or `git checkout` a branch in a clone under
+`~/work/repos`. Any other branch (a ticket, a framework change, a fix, a
+rebase, a merge conflict) goes in a worktree of its own:
+`git worktree add <repo>/.claude/worktrees/<branch> -b <branch> origin/<default>`,
+or the client's worktree isolation. Remove the worktree once the branch has
+merged.
+
 ## The collaboration framework
 
 `repos/collaboration-framework` is the planning workspace for all of this work:
