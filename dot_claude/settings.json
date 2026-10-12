@@ -1,4 +1,7 @@
 {
+  "env": {
+    "CLAUDE_MEM_TELEMETRY": "0"
+  },
   "enabledPlugins": {
     "workspace-console@workspace-console": true,
     "claude-mem@thedotmack": true,
@@ -24,8 +27,5 @@
       }
     }
   },
-  "theme": "dark",
-  "env": {
-    "CLAUDE_MEM_TELEMETRY": "0"
-  }
+  "theme": "dark"
 }
