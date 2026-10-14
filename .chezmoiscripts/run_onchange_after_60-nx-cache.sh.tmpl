@@ -1,0 +1,12 @@
+#!/bin/bash
+# (Re)starts the local Nx remote cache whenever its server or agent changes.
+# server.mjs hash: {{ include "dot_local/share/nx-cache/server.mjs" | sha256sum }}
+# plist hash: {{ include "private_Library/LaunchAgents/local.nx-cache.plist.tmpl" | sha256sum }}
+set -euo pipefail
+
+plist="$HOME/Library/LaunchAgents/local.nx-cache.plist"
+domain="gui/$(id -u)"
+
+echo "[nx-cache] Loading $plist..."
+launchctl bootout "$domain/local.nx-cache" 2>/dev/null || true
+launchctl bootstrap "$domain" "$plist"

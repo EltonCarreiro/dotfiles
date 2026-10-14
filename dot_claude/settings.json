@@ -1,6 +1,7 @@
 {
   "env": {
-    "CLAUDE_MEM_TELEMETRY": "0"
+    "CLAUDE_MEM_TELEMETRY": "0",
+    "NX_SELF_HOSTED_REMOTE_CACHE_SERVER": "http://127.0.0.1:4380"
   },
   "enabledPlugins": {
     "workspace-console@workspace-console": true,

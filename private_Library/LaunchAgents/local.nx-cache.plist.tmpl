@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!-- Managed by chezmoi. The local Nx remote cache; see ~/.local/share/nx-cache/server.mjs. -->
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>local.nx-cache</string>
+    <key>ProgramArguments</key>
+    <array>
+        <!-- nvm's default Node, so a Node upgrade needs no edit here. -->
+        <string>/bin/zsh</string>
+        <string>-c</string>
+        <string>. /opt/homebrew/opt/nvm/nvm.sh &amp;&amp; exec node {{ .chezmoi.homeDir }}/.local/share/nx-cache/server.mjs</string>
+    </array>
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>NVM_DIR</key>
+        <string>{{ .chezmoi.homeDir }}/.nvm</string>
+    </dict>
+    <key>RunAtLoad</key>
+    <true/>
+    <key>KeepAlive</key>
+    <true/>
+    <key>ProcessType</key>
+    <string>Background</string>
+    <key>StandardOutPath</key>
+    <string>{{ .chezmoi.homeDir }}/Library/Logs/nx-cache.log</string>
+    <key>StandardErrorPath</key>
+    <string>{{ .chezmoi.homeDir }}/Library/Logs/nx-cache.log</string>
+</dict>
+</plist>
